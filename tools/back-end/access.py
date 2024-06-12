@@ -1,13 +1,13 @@
 import json
 import random
 import ast
-from revChatGPT.V1 import Chatbot
+from openai import OpenAI
 import re
-import openai
+#import openai
 import itertools
 
 df_access = [
-    ('@gYaKlfLGewYYkmZb7T3BlbkFJouvA5wegTYHbPcgWgI4D','sk-1Ni')
+    ('sk-qHo9EZHTdqsLjlqaVqb6oUhu7VuHK31JLICY78vnlfWPCg6l')
 ]
 
 df_ret = {
@@ -108,7 +108,7 @@ def chat_re(inda, chatbot):
         mess.append({"role": "user", "content": s1p})
         text1 = chatbot(mess)
         mess.append({"role": "assistant", "content": text1})
-        print(text1)
+        print("text1:"+text1)
 
         # 正则提取结果
         res1 = re.findall(r'\(.*?\)', text1)
@@ -383,7 +383,6 @@ all_keys = itertools.cycle(keys)
 def create(**args):
     global all_keys
     openai.api_key = next(all_keys)
-
     try:
         result = openai.ChatCompletion.create(**args)
     except openai.error.RateLimitError:
@@ -403,6 +402,19 @@ def chat(mess):
     res = responde['choices'][0]['message']['content']
     return res
 
+def chatkimi(mess):
+    MOONSHOT_API_KEY='sk-qHo9EZHTdqsLjlqaVqb6oUhu7VuHK31JLICY78vnlfWPCg6l'
+    client = OpenAI(
+        api_key=MOONSHOT_API_KEY,
+        base_url="https://api.moonshot.cn/v1",
+    )
+    completion = client.chat.completions.create(
+        model="moonshot-v1-8k",
+        messages=mess,
+        temperature=0.3,
+    )
+    res = completion.choices[0].message.content
+    return res
 
 def chatie(input_data):
     print('input data type:{}'.format(type(input_data)))
@@ -423,7 +435,8 @@ def chatie(input_data):
     ## chatgpt
     try:
         #openai.api_key = input_data['access']
-        chatbot = chat
+       #chatbot = chat
+        chatbot = chatkimi
     except Exception as e:
         print('---chatbot---')
         print(e)
@@ -465,20 +478,21 @@ def chatie(input_data):
     return input_data
 
 if __name__=="__main__":
-    p = '''第五部：《如懿传》《如懿传》是一部古装宫廷情感电视剧，由汪俊执导，周迅、霍建华、张钧甯、董洁、辛芷蕾、童瑶、李纯、邬君梅等主演'''
+    #p = '''第五部：《如懿传》《如懿传》是一部古装宫廷情感电视剧，由汪俊执导，周迅、霍建华、张钧甯、董洁、辛芷蕾、童瑶、李纯、邬君梅等主演'''
     #p = '''Mr. Johnson retired before the 2005 season and briefly worked as a football analyst for WBZ-TV in Boston .'''
     #'''Four other Google executives the chief financial officer , George Reyes ; the senior vice president for business operations , Shona Brown ; the chief legal officer , David Drummond ; and the senior vice president for product management , Jonathan Rosenberg earned salaries of $ 250,000 each .'''
     # -------
     #p = '''中国共产党创立于中华民国大陆时期，由陈独秀和李大钊领导组织。'''
     #p = '''James worked for Google in Beijing, the capital of China.'''
     # --------
-    #p = '''在2022年卡塔尔世界杯决赛中，阿根廷以点球大战险胜法国。'''
+    p = '''在2022年卡塔尔世界杯决赛中，阿根廷以点球大战险胜法国。'''
     #p = '''Yesterday Bob and his wife got divorced in Guangzhou.'''
+    p = '古往今来，能饰演古龙小说人物“楚留香”的，无一不是娱乐圈公认的美男子，2011年，36岁的张智尧在《楚留香新传》里饰演楚留香，依旧帅得让人无法自拔'
 
     ind = {
       "sentence": p,
       "type": "",
-      "access": "",
+      "access": "sk-qHo9EZHTdqsLjlqaVqb6oUhu7VuHK31JLICY78vnlfWPCg6l",
       "task": "RE",
       "lang": "chinese",
     }
