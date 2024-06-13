@@ -7,7 +7,7 @@ import re
 import itertools
 
 df_access = [
-    ('sk-qHo9EZHTdqsLjlqaVqb6oUhu7VuHK31JLICY78vnlfWPCg6l')
+    ('sk-qHo9EZHTdqsL')
 ]
 
 df_ret = {
@@ -89,7 +89,7 @@ ee_s2_p = {
 
 def chat_re(inda, chatbot):
     print("---RE---")
-    mess = [{"role": "system", "content": "You are a helpful assistant."},] # chatgpt对话历史
+    mess = [{"role": "system", "content": "You are a helpful assistant."},] # gpt对话历史
 
     typelist = inda['type']
     sent = inda['sentence']
@@ -416,6 +416,19 @@ def chatkimi(mess):
     res = completion.choices[0].message.content
     return res
 
+def chatollama(mess):
+    client = OpenAI(
+        api_key="ollama",
+        base_url = 'http://192.168.100.168:11434/v1',
+    )
+    completion = client.chat.completions.create(
+        model="llama2-chinese:13b",
+        messages=mess,
+        temperature=0.3,
+    )
+    res = completion.choices[0].message.content
+    return res
+
 def chatie(input_data):
     print('input data type:{}'.format(type(input_data)))
     print('input data:{}'.format(input_data))
@@ -436,7 +449,7 @@ def chatie(input_data):
     try:
         #openai.api_key = input_data['access']
        #chatbot = chat
-        chatbot = chatkimi
+        chatbot = chatollama
     except Exception as e:
         print('---chatbot---')
         print(e)
@@ -478,7 +491,7 @@ def chatie(input_data):
     return input_data
 
 if __name__=="__main__":
-    #p = '''第五部：《如懿传》《如懿传》是一部古装宫廷情感电视剧，由汪俊执导，周迅、霍建华、张钧甯、董洁、辛芷蕾、童瑶、李纯、邬君梅等主演'''
+    p = '''第五部：《如懿传》《如懿传》是一部古装宫廷情感电视剧，由汪俊执导，周迅、霍建华、张钧甯、董洁、辛芷蕾、童瑶、李纯、邬君梅等主演'''
     #p = '''Mr. Johnson retired before the 2005 season and briefly worked as a football analyst for WBZ-TV in Boston .'''
     #'''Four other Google executives the chief financial officer , George Reyes ; the senior vice president for business operations , Shona Brown ; the chief legal officer , David Drummond ; and the senior vice president for product management , Jonathan Rosenberg earned salaries of $ 250,000 each .'''
     # -------
@@ -487,12 +500,12 @@ if __name__=="__main__":
     # --------
     p = '''在2022年卡塔尔世界杯决赛中，阿根廷以点球大战险胜法国。'''
     #p = '''Yesterday Bob and his wife got divorced in Guangzhou.'''
-    p = '古往今来，能饰演古龙小说人物“楚留香”的，无一不是娱乐圈公认的美男子，2011年，36岁的张智尧在《楚留香新传》里饰演楚留香，依旧帅得让人无法自拔'
+    #p = '古往今来，能饰演古龙小说人物“楚留香”的，无一不是娱乐圈公认的美男子，2011年，36岁的张智尧在《楚留香新传》里饰演楚留香，依旧帅得让人无法自拔'
 
     ind = {
       "sentence": p,
       "type": "",
-      "access": "sk-qHo9EZHTdqsLjlqaVqb6oUhu7VuHK31JLICY78vnlfWPCg6l",
+      "access": "sk-qHo9EZHTdqs",
       "task": "RE",
       "lang": "chinese",
     }
